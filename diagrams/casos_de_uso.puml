@@ -1,0 +1,51 @@
+@startuml Diagrama_Casos_de_Uso_Mesa_Ayuda
+left to right direction
+skinparam packageStyle rectangle
+
+actor "Ejecutivo Mesa de Ayuda" as ExecMesa
+actor "Ejecutivo Área Específica" as ExecArea
+actor "Jefe de Mesa" as JefeMesa
+
+rectangle "Sistema Web Mesa de Ayuda (Consúltenos)" {
+
+    ' Acceso Inicial y Autenticación (Precondición de Entrada)
+    usecase "CU01: Autenticarse en el Sistema" as CU_Auth
+
+    ' Módulo 1: Creación y Derivación
+    usecase "CU02: Registrar Nuevo Tique" as CU_RegTique
+    usecase "CU03: Previsualizar Tique" as CU_PrevTique
+    usecase "CU04: Derivar Tique a Área (Estado 'A resolución')" as CU_Derivar
+
+    ' Módulo 2: Gestión y Cierre por Área
+    usecase "CU05: Consultar Tiques Asignados" as CU_ConsArea
+    usecase "CU06: Resolver / Cerrar Tique (Estado 'Resuelto' / 'No aplicable')" as CU_CerrarTique
+    usecase "CU07: Ingresar Observación Obligatoria de Cierre" as CU_Obs
+
+    ' Módulo 3: Administración y Reportes para Jefatura
+    usecase "CU08: Filtrar y Consultar Reportes" as CU_Reportes
+    usecase "CU09: Gestionar Usuarios (Mantenedor)" as CU_GestUsers
+    usecase "CU10: Gestionar Catálogos (Áreas / Tipos / Criticidades)" as CU_GestCat
+
+    ' Relaciones <<include>> Formales (Origen ..> Destino)
+    ' La creación incluye la previsualización y la derivación del tique
+    CU_RegTique ..> CU_PrevTique : <<include>>
+    CU_RegTique ..> CU_Derivar : <<include>>
+
+    ' El cierre/resolución exige de forma obligatoria la observación de cierre
+    CU_CerrarTique ..> CU_Obs : <<include>>
+}
+
+' Asociaciones Directas Actores - Casos de Uso
+ExecMesa --> CU_Auth
+ExecMesa --> CU_RegTique
+
+ExecArea --> CU_Auth
+ExecArea --> CU_ConsArea
+ExecArea --> CU_CerrarTique
+
+JefeMesa --> CU_Auth
+JefeMesa --> CU_Reportes
+JefeMesa --> CU_GestUsers
+JefeMesa --> CU_GestCat
+
+@enduml
